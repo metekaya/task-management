@@ -1,20 +1,18 @@
 <template>
   <div id="app">
     <div class="d-flex justify-content-center">
-      <div class="d-flex justify-content-between gap-3 pt-5">
-        <TaskCard v-for="task in tasks" :key="task.id" :task="task" />
-      </div>
+      <TaskBoard :tasks="tasks" />
     </div>
   </div>
 </template>
 
 <script>
-import TaskCard from '@/components/TaskCard.vue';
+import TaskBoard from '@/components/TaskBoard.vue';
 
 export default {
   name: 'App',
   components: {
-    TaskCard,
+    TaskBoard,
   },
   data() {
     return {
