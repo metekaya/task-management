@@ -1,6 +1,6 @@
 <template>
-    <div class="card border-1 rounded shadow" style="width: 18rem;">
-        <div class="card-body p-3">
+    <div class="card border-1 rounded shadow mt-2">
+        <div class="card-body">
             <h5>{{ task.title }}</h5>
             <p>{{ task.description }}</p>
             <span :class="badgeClass">{{ task.status }}</span>
