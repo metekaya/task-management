@@ -3,7 +3,7 @@
         <div class="card-body p-3">
             <h5>{{ task.title }}</h5>
             <p>{{ task.description }}</p>
-            <span class="badge badge-pill bg-primary">{{ task.status }}</span>
+            <span :class="badgeClass">{{ task.status }}</span>
         </div>
     </div>
 </template>
@@ -13,6 +13,16 @@ export default {
   name: 'TaskCard',
   props: {
     task: Object,
+  },
+  computed: {
+    badgeClass() {
+      return {
+        'badge badge-pill': true,
+        'badge badge-pill bg-primary': this.task.status === 'open',
+        'badge badge-pill bg-warning': this.task.status === 'testing',
+        'badge badge-pill bg-success': this.task.status === 'done',
+      };
+    },
   },
 };
 </script>
