@@ -1,19 +1,26 @@
 <template>
-  <HomePage :msg="msg" />
+  <div id="app">
+    <TaskCard :task="sampleTask" />
+  </div>
 </template>
 
 <script>
-import HomePage from './components/HomePage.vue';
+import TaskCard from '@/components/TaskCard.vue';
 
 export default {
   name: 'App',
+  components: {
+    TaskCard,
+  },
   data() {
     return {
-      msg: 'Task Management App',
+      sampleTask: {
+        id: 1,
+        title: 'Sample Task',
+        description: 'This is a sample task description.',
+        status: 'open',
+      },
     };
-  },
-  components: {
-    HomePage,
   },
 };
 </script>
