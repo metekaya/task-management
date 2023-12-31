@@ -8,13 +8,25 @@
 
 <script>
 import TaskGroup from '@/components/TaskGroup.vue';
+import axios from 'axios';
 
 export default {
   components: {
     TaskGroup,
   },
-  props: {
-    tasks: Array,
+  data() {
+    return {
+      tasks: [],
+    };
+  },
+  mounted() {
+    axios.get('http://localhost:5000/tasks')
+      .then(response => {
+        this.tasks = response.data.tasks;
+      })
+      .catch(error => {
+        console.error('Error fetching tasks:', error);
+      });
   },
   methods: {
     filteredTasks(status) {
