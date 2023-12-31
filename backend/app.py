@@ -33,6 +33,17 @@ class TaskListResource(Resource):
     def get(self):
         return jsonify({"tasks": tasks})
 
+    def post(self):
+        data = request.get_json()
+        new_task = {
+            "id": len(tasks) + 1,
+            "title": data["title"],
+            "description": data["description"],
+            "status": "open",
+        }
+        tasks.append(new_task)
+        return jsonify({"message": "Task added successfully", "task": new_task})
+
 
 api.add_resource(TaskListResource, '/tasks')
 
