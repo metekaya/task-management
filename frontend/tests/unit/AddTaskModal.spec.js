@@ -73,4 +73,23 @@ describe("AddTaskModal.vue", () => {
     await wrapper.find("form").trigger("submit.prevent");
     expect(wrapper.emitted("add-task")).toBeUndefined();
   });
+
+  it("Hides the modal after clicking the discard button", async () => {
+    await wrapper.find(".btn-danger").trigger("click");
+    expect(wrapper.vm.$refs["modal"].hide).toHaveBeenCalled();
+  });
+
+  it("Resets the editedTask object after clicking the discard button", async () => {
+    wrapper.setData({
+      editedTask: {
+        title: "Test Task",
+        description: "Test Description",
+      },
+    });
+
+    await wrapper.find(".btn-danger").trigger("click");
+    expect(wrapper.vm.editedTask.title).toBe("");
+    expect(wrapper.vm.editedTask.description).toBe("");
+    expect(wrapper.vm.editedTask.status).toBe("open");
+  });
 });

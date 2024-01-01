@@ -14,6 +14,7 @@
         <div class="invalid-feedback">Description is required.</div>
       </div>
       <div class="d-flex justify-content-end mt-3">
+        <button type="button" class="btn btn-lg btn-danger me-2" @click="discardTask">Discard</button>
         <button type="submit" class="btn btn-lg btn-primary">Save</button>
       </div>
     </form>
@@ -52,7 +53,15 @@ export default {
         title: "",
         description: "",
       };
-    }
+    },
+    discardTask() {
+    this.$refs.modal.hide();
+    this.editedTask = {
+      title: '',
+      description: '',
+      status: 'open',
+    };
+    },
   }
 };
 </script>
