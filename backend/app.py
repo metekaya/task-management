@@ -44,6 +44,25 @@ class TaskListResource(Resource):
         tasks.append(new_task)
         return jsonify({"message": "Task added successfully", "task": new_task})
 
+    def put(self, task_id):
+        data = request.get_json()
+        new_status = data.get("status")
+
+        if new_status and new_status in ["open", "testing", "done"]:
+            print(tasks)
+            for task in tasks:
+                print(task["id"])
+            print(task_id)
+            task = next(
+                (task for task in tasks if task["id"] == int(task_id)), None)
+            print(task)
+            if task:
+                print(f"Updating task {task_id} with status {new_status}")
+                task["status"] = new_status
+                return jsonify({"message": "Task status updated successfully", "task": task})
+
+        return jsonify({"message": "Invalid status or task not found"}), 404
+
     def delete(self, task_id):
         task_idx = next((idx for (idx, task) in enumerate(
             tasks) if task["id"] == int(task_id)), None)
