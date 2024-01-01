@@ -84,4 +84,23 @@ describe("TaskCard.vue", () => {
     expect(wrapper.find("p").text()).toBe("Description for Task 4");
     expect(wrapper.find(".badge").classes()).toContain("badge", "badge-pill");
   });
+
+  it("Sets the isDeleteLoading state to true when delete button is clicked", async () => {
+    const task = {
+      id: 1,
+      title: "Task 1",
+      description: "Description for Task 1",
+      status: "open",
+    };
+
+    const wrapper = shallowMount(TaskCard, {
+      props: { task },
+    });
+
+    expect(wrapper.vm.isDeleteLoading).toBe(false);
+    await wrapper.find(".btn-danger").trigger("click");
+
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.isDeleteLoading).toBe(true);
+  });
 });

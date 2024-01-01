@@ -5,7 +5,13 @@
       <p>{{ task.description }}</p>
       <span :class="badgeClass">{{ task.status }}</span>
       <div class="border-top mt-3 d-flex justify-content-between">
-        <button @click="deleteTask" class="btn btn-sm btn-danger mt-2">Delete</button>
+        <button @click="deleteTask" class="btn btn-sm btn-danger mt-2" :disabled="isDeleteLoading">
+          <span v-if="!isDeleteLoading">Delete</span>
+          <span v-else>
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            Deleting...
+          </span>
+        </button>
       </div>
     </div>
   </div>
@@ -15,6 +21,11 @@
 export default {
   props: {
     task: Object,
+  },
+  data() {
+    return {
+      isDeleteLoading: false,
+    };
   },
   computed: {
     badgeClass() {
@@ -28,6 +39,10 @@ export default {
   },
   methods: {
     deleteTask() {
+      if (this.isDeleteLoading) {
+        return;
+      }
+      this.isDeleteLoading = true;
       this.$emit('delete-task', this.task);
     }
   }
