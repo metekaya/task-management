@@ -1,11 +1,11 @@
 <template>
-    <div class="card border-1 rounded shadow mt-2">
-        <div class="card-body">
-            <h5>{{ task.title }}</h5>
-            <p>{{ task.description }}</p>
-            <span :class="badgeClass">{{ task.status }}</span>
-        </div>
+  <div class="card border-1 rounded shadow mt-2">
+    <div class="card-body">
+      <h5>{{ task.title }}</h5>
+      <p>{{ task.description }}</p>
+      <span :class="badgeClass">{{ task.status }}</span>
     </div>
+  </div>
 </template>
 
 <script>

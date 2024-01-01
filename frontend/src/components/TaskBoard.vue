@@ -1,9 +1,16 @@
 <template>
-  <div class="d-flex justify-content-between gap-5 pt-5">
-    <TaskGroup status="open" :tasks="filteredTasks('open')" />
-    <TaskGroup status="testing" :tasks="filteredTasks('testing')" />
-    <TaskGroup status="done" :tasks="filteredTasks('done')" />
-    <AddTaskModal :task="newTask" @add-task="addTask" />
+  <div class="d-flex align-items-center justify-content-center flex-column gap-5 mt-5">
+    <div class="d-flex justify-content-between w-100">
+      <h1>Task Management App</h1>
+      <div class="d-flex">
+        <AddTaskModal :task="newTask" @add-task="addTask" />
+      </div>
+    </div>
+    <div class="d-flex gap-5">
+      <TaskGroup status="open" :tasks="filteredTasks('open')" />
+      <TaskGroup status="testing" :tasks="filteredTasks('testing')" />
+      <TaskGroup status="done" :tasks="filteredTasks('done')" />
+    </div>
   </div>
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-  <b-modal ref="modal" id="modal-center" centered title="Add Task">
+  <b-modal ref="modal" id="modal-center" size="lg" centered title="Add New Task" hide-footer>
     <form @submit.prevent="addTask">
       <div class="mb-3">
         <label for="task-title" class="form-label">Title</label>
@@ -9,14 +9,16 @@
       </div>
       <div class="mb-3">
         <label for="task-description" class="form-label">Description</label>
-        <textarea class="form-control" id="task-description" v-model="editedTask.description"
+        <textarea class="form-control" id="task-description" rows="10" v-model="editedTask.description"
           :class="{ 'is-invalid': !isValidDescription }" placeholder="Task Description"></textarea>
         <div class="invalid-feedback">Description is required.</div>
       </div>
-      <button type="submit" class="btn btn-primary">Add Task</button>
+      <div class="d-flex justify-content-end mt-3">
+        <button type="submit" class="btn btn-lg btn-primary">Save</button>
+      </div>
     </form>
   </b-modal>
-  <b-button v-b-modal.modal-center>Launch centered modal</b-button>
+  <b-button v-b-modal.modal-center variant="primary">Create New Task</b-button>
 </template>
 
 <script>
