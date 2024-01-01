@@ -115,6 +115,59 @@ describe("TaskBoard.vue", () => {
     mockedAxios.restore();
   });
 
+  it("Moves a task to the next status when move-to-next-status event is emitted", async () => {
+    const mockedAxios = new MockAdapter(axios);
+
+    mockedAxios
+      .onGet("http://localhost:5000/tasks")
+      .reply(200, { tasks: mockedTasks });
+
+    mockedAxios.onPut("http://localhost:5000/tasks/1").reply(200, {
+      id: 1,
+      title: "Mocked Task 1",
+      description: "Description for Mocked Task 1",
+      status: "testing",
+    });
+
+    mockedAxios.onGet("http://localhost:5000/tasks").reply(200, {
+      tasks: [
+        ...mockedTasks,
+        {
+          id: 1,
+          title: "Mocked Task 1",
+          description: "Description for Mocked Task 1",
+          status: "testing",
+        },
+      ],
+    });
+
+    const wrapper = mount(TaskBoard);
+    await flushPromises();
+
+    const taskCard = wrapper.findComponent({ name: "TaskCard" });
+    await taskCard.vm.$emit("move-to-next-status", mockedTasks[0]);
+    await wrapper.vm.$nextTick();
+
+    expect(mockedAxios.history.put.length).toBe(1);
+    expect(mockedAxios.history.put[0].url).toBe(
+      "http://localhost:5000/tasks/1"
+    );
+    expect(JSON.parse(mockedAxios.history.put[0].data)).toMatchObject({
+      status: "testing",
+    });
+
+    expect(mockedAxios.history.get.length).toBe(2);
+
+    expect(wrapper.vm.tasks).toContainEqual({
+      id: 1,
+      title: "Mocked Task 1",
+      description: "Description for Mocked Task 1",
+      status: "testing",
+    });
+
+    mockedAxios.restore();
+  });
+
   it("Deletes a task when delete request is sent to backend", async () => {
     const mockedAxios = new MockAdapter(axios);
 

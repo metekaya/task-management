@@ -103,4 +103,53 @@ describe("TaskCard.vue", () => {
     await wrapper.vm.$nextTick();
     expect(wrapper.vm.isDeleteLoading).toBe(true);
   });
+
+  it("Sets the isMoveLoading state to true when moveToNextStatus button is clicked", async () => {
+    const task = {
+      id: 1,
+      title: "Task 1",
+      description: "Description for Task 1",
+      status: "open",
+    };
+
+    const wrapper = shallowMount(TaskCard, {
+      props: { task },
+    });
+
+    expect(wrapper.vm.isMoveLoading).toBe(false);
+    await wrapper.find(".btn-secondary").trigger("click");
+
+    await wrapper.vm.$nextTick();
+    expect(wrapper.vm.isMoveLoading).toBe(true);
+  });
+
+  it("Gets the correct text when getButtonText function is called for 'open' status", () => {
+    const task = {
+      id: 1,
+      title: "Task 1",
+      description: "Description for Task 1",
+      status: "open",
+    };
+    const wrapper = shallowMount(TaskCard, {
+      propsData: { task },
+    });
+
+    const buttonText = wrapper.vm.getButtonText();
+    expect(buttonText).toBe("Move to Testing");
+  });
+
+  it("Gets the correct text when getButtonText function is called for 'testing' status", () => {
+    const task = {
+      id: 1,
+      title: "Task 1",
+      description: "Description for Task 1",
+      status: "testing",
+    };
+    const wrapper = shallowMount(TaskCard, {
+      propsData: { task },
+    });
+
+    const buttonText = wrapper.vm.getButtonText();
+    expect(buttonText).toBe("Move to Done");
+  });
 });

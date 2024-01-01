@@ -4,7 +4,8 @@
       {{ status.charAt(0).toUpperCase() + status.slice(1) }} Tasks
     </div>
     <div class="card-body p-3">
-      <TaskCard v-for="task in tasks" :key="task.id" :task="task" @delete-task="deleteTask" />
+      <TaskCard v-for="task in tasks" :key="task.id" :task="task" @delete-task="deleteTask"
+        @move-to-next-status="moveToNextStatus" />
     </div>
   </div>
 </template>
@@ -24,6 +25,9 @@ export default {
     deleteTask(task) {
       this.$emit('delete-task', task);
     },
+    moveToNextStatus(task) {
+      this.$emit('move-to-next-status', task);
+    }
   },
 };
 </script>

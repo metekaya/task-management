@@ -7,8 +7,10 @@
       </div>
     </div>
     <div class="d-flex gap-5">
-      <TaskGroup status="open" :tasks="filteredTasks('open')" @delete-task="deleteTask" />
-      <TaskGroup status="testing" :tasks="filteredTasks('testing')" @delete-task="deleteTask" />
+      <TaskGroup status="open" :tasks="filteredTasks('open')" @delete-task="deleteTask"
+        @move-to-next-status="moveToNextStatus" />
+      <TaskGroup status="testing" :tasks="filteredTasks('testing')" @delete-task="deleteTask"
+        @move-to-next-status="moveToNextStatus" />
       <TaskGroup status="done" :tasks="filteredTasks('done')" @delete-task="deleteTask" />
     </div>
   </div>
@@ -53,6 +55,22 @@ export default {
       } catch (error) {
         console.error('Error adding task:', error);
       }
+    },
+    async moveToNextStatus(task) {
+      try {
+        const nextStatus = this.getNextStatus(task.status);
+        await axios.put(`http://localhost:5000/tasks/${task.id}`, { status: nextStatus});
+        this.fetchTasks();
+      } catch (error) {
+        console.error('Error moving task to the next status', error);
+      }
+    },
+    getNextStatus(currentStatus) {
+      const statusMap = {
+        'open': 'testing',
+        'testing': 'done',
+      };
+      return statusMap[currentStatus] || currentStatus; 
     },
     async deleteTask(task) {
       try {

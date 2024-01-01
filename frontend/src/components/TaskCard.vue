@@ -12,6 +12,14 @@
             Deleting...
           </span>
         </button>
+        <button v-if="task.status !== 'done'" @click="moveToNextStatus" class="btn btn-sm btn-secondary mt-2"
+          :disabled="isMoveLoading">
+          <span v-if="!isMoveLoading">{{ getButtonText() }}</span>
+          <span v-else>
+            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+            Moving...
+          </span>
+        </button>
       </div>
     </div>
   </div>
@@ -25,6 +33,7 @@ export default {
   data() {
     return {
       isDeleteLoading: false,
+      isMoveLoading: false,
     };
   },
   computed: {
@@ -44,7 +53,23 @@ export default {
       }
       this.isDeleteLoading = true;
       this.$emit('delete-task', this.task);
-    }
+    },
+    moveToNextStatus() {
+      if (this.isMoveLoading) {
+        return;
+      }
+      this.isMoveLoading = true;
+      this.$emit('move-to-next-status', this.task);
+    },
+    getButtonText() {
+      if (this.task.status === 'open') {
+        return 'Move to Testing';
+      } else if (this.task.status === 'testing') {
+        return 'Move to Done';
+      } else {
+        return ''; 
+      }
+    },
   }
 };
 </script>
