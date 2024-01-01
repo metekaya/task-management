@@ -4,13 +4,15 @@
       <h5>{{ task.title }}</h5>
       <p>{{ task.description }}</p>
       <span :class="badgeClass">{{ task.status }}</span>
+      <div class="border-top mt-3 d-flex justify-content-between">
+        <button @click="deleteTask" class="btn btn-sm btn-danger mt-2">Delete</button>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'TaskCard',
   props: {
     task: Object,
   },
@@ -24,5 +26,10 @@ export default {
       };
     },
   },
+  methods: {
+    deleteTask() {
+      this.$emit('delete-task', this.task);
+    }
+  }
 };
 </script>

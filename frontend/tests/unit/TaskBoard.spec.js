@@ -32,6 +32,13 @@ describe("TaskBoard.vue", () => {
     },
   ];
 
+  it("Renders task board with correct structure", () => {
+    const wrapper = shallowMount(TaskBoard);
+
+    const taskGroupComponents = wrapper.findAllComponents(TaskGroup);
+    expect(taskGroupComponents).toHaveLength(3);
+  });
+
   it("Fetches tasks from the backend correctly", async () => {
     const mockedAxios = new MockAdapter(axios);
 
@@ -49,10 +56,24 @@ describe("TaskBoard.vue", () => {
     mockedAxios.restore();
   });
 
-  it("Renders task board with correct structure", () => {
-    const wrapper = shallowMount(TaskBoard);
+  it("Deletes a task when delete request is sent to backend", async () => {
+    const mockedAxios = new MockAdapter(axios);
 
-    const taskGroupComponents = wrapper.findAllComponents(TaskGroup);
-    expect(taskGroupComponents).toHaveLength(3);
+    mockedAxios
+      .onGet("http://localhost:5000/tasks")
+      .reply(200, { tasks: mockedTasks });
+
+    mockedAxios.onDelete("http://localhost:5000/tasks/1").reply(200);
+
+    const wrapper = mount(TaskBoard);
+    await flushPromises();
+
+    const taskCard = wrapper.findComponent({ name: "TaskCard" });
+    await taskCard.vm.$emit("delete-task", mockedTasks[0]);
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.vm.tasks).not.toContain("Mocked Task 1");
+
+    mockedAxios.restore();
   });
 });

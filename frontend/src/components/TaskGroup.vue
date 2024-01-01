@@ -4,7 +4,7 @@
       {{ status.charAt(0).toUpperCase() + status.slice(1) }} Tasks
     </div>
     <div class="card-body p-3">
-      <TaskCard v-for="task in tasks" :key="task.id" :task="task" />
+      <TaskCard v-for="task in tasks" :key="task.id" :task="task" @delete-task="deleteTask" />
     </div>
   </div>
 </template>
@@ -19,6 +19,11 @@ export default {
   props: {
     status: String,
     tasks: Array,
+  },
+  methods: {
+    deleteTask(task) {
+      this.$emit('delete-task', task);
+    },
   },
 };
 </script>

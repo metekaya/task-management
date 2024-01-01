@@ -7,9 +7,9 @@
       </div>
     </div>
     <div class="d-flex gap-5">
-      <TaskGroup status="open" :tasks="filteredTasks('open')" />
-      <TaskGroup status="testing" :tasks="filteredTasks('testing')" />
-      <TaskGroup status="done" :tasks="filteredTasks('done')" />
+      <TaskGroup status="open" :tasks="filteredTasks('open')" @delete-task="deleteTask" />
+      <TaskGroup status="testing" :tasks="filteredTasks('testing')" @delete-task="deleteTask" />
+      <TaskGroup status="done" :tasks="filteredTasks('done')" @delete-task="deleteTask" />
     </div>
   </div>
 </template>
@@ -52,6 +52,14 @@ export default {
         this.fetchTasks(); 
       } catch (error) {
         console.error('Error adding task:', error);
+      }
+    },
+    async deleteTask(task) {
+      try {
+        await axios.delete(`http://localhost:5000/tasks/${task.id}`);
+        this.fetchTasks();
+      } catch (error) {
+        console.error('Error deleting task:', error);
       }
     },
     filteredTasks(status) {
