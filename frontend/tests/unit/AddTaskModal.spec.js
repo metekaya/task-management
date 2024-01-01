@@ -41,7 +41,7 @@ describe("AddTaskModal.vue", () => {
   });
 
   it("Does not emit 'add-task' event when form is submitted with invalid data", async () => {
-    const wrapper = shallowMount(AddTaskModal);
+    wrapper = shallowMount(AddTaskModal);
 
     wrapper.setData({
       editedTask: {
