@@ -44,22 +44,18 @@ class TaskListResource(Resource):
         tasks.append(new_task)
         return jsonify({"message": "Task added successfully", "task": new_task})
 
-    def delete(self):
-        data = request.get_json()
-        task_id = data.get("id")
+    def delete(self, task_id):
+        task_idx = next((idx for (idx, task) in enumerate(
+            tasks) if task["id"] == int(task_id)), None)
 
-        if task_id is not None:
-            task_idx = next((idx for (idx, task) in enumerate(
-                tasks) if task["id"] == task_id), None)
-
-            if task_idx is not None:
-                deleted_task = tasks.pop(task_idx)
-                return jsonify({"message": "Task deleted successfully", "task": deleted_task})
+        if task_idx is not None:
+            deleted_task = tasks.pop(task_idx)
+            return jsonify({"message": "Task deleted successfully", "task": deleted_task})
 
         return jsonify({"message": "Task not found"}), 404
 
 
-api.add_resource(TaskListResource, '/tasks')
+api.add_resource(TaskListResource, '/tasks', '/tasks/<int:task_id>')
 
 if __name__ == '__main__':
     app.run(debug=True)

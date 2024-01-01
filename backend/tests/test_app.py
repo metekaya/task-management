@@ -28,10 +28,10 @@ class TestApp(unittest.TestCase):
         self.assertEqual(data['message'], 'Task added successfully')
 
     def test_delete_task(self):
-        response = self.app.delete('/tasks', json=self.mock_task)
-        data = response.get_json()
+        delete_response = self.app.delete(f'/tasks/{self.mock_task["id"]}')
+        data = delete_response.get_json()
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(delete_response.status_code, 200)
         self.assertIn('task', data)
         self.assertIn('message', data)
         self.assertEqual(data['message'], 'Task deleted successfully')
