@@ -21,14 +21,20 @@ class TestApp(unittest.TestCase):
     def test_post_task(self):
         response = self.app.post('/tasks', json=self.mock_task)
         data = response.get_json()
+
         self.assertEqual(response.status_code, 200)
         self.assertIn('task', data)
+        self.assertIn('message', data)
+        self.assertEqual(data['message'], 'Task added successfully')
 
     def test_delete_task(self):
         response = self.app.delete('/tasks', json=self.mock_task)
         data = response.get_json()
+
         self.assertEqual(response.status_code, 200)
         self.assertIn('task', data)
+        self.assertIn('message', data)
+        self.assertEqual(data['message'], 'Task deleted successfully')
 
 
 if __name__ == '__main__':
