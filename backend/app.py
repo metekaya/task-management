@@ -49,15 +49,9 @@ class TaskListResource(Resource):
         new_status = data.get("status")
 
         if new_status and new_status in ["open", "testing", "done"]:
-            print(tasks)
-            for task in tasks:
-                print(task["id"])
-            print(task_id)
             task = next(
                 (task for task in tasks if task["id"] == int(task_id)), None)
-            print(task)
             if task:
-                print(f"Updating task {task_id} with status {new_status}")
                 task["status"] = new_status
                 return jsonify({"message": "Task status updated successfully", "task": task})
 
