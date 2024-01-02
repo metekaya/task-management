@@ -6,6 +6,9 @@
     <div class="card-body p-3">
       <TaskCard v-for="task in tasks" :key="task.id" :task="task" @delete-task="deleteTask"
         @move-to-next-status="moveToNextStatus" />
+      <div v-if="tasks.length === 0">
+        <p>No tasks available.</p>
+      </div>
     </div>
   </div>
 </template>
