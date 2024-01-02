@@ -1,12 +1,12 @@
 <template>
   <div class="d-flex align-items-center justify-content-center flex-column gap-5 mt-5">
-    <div class="d-flex justify-content-between w-100">
+    <div class="d-flex flex-column flex-lg-row justify-content-between w-100">
       <h1>Task Management App</h1>
-      <div class="d-flex">
+      <div class="d-flex mt-3 mt-sm-0">
         <AddTaskModal :task="newTask" @add-task="addTask" />
       </div>
     </div>
-    <div class="d-flex gap-5">
+    <div class="d-flex flex-column flex-lg-row gap-5">
       <TaskGroup status="open" :tasks="filteredTasks('open')" @delete-task="deleteTask"
         @move-to-next-status="moveToNextStatus" />
       <TaskGroup status="testing" :tasks="filteredTasks('testing')" @delete-task="deleteTask"
