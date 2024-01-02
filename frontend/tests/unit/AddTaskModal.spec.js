@@ -38,6 +38,7 @@ describe("AddTaskModal.vue", () => {
     await wrapper.vm.$nextTick();
 
     expect(wrapper.vm.$refs["modal"].hide).toHaveBeenCalled();
+    expect(wrapper.vm.formSubmitted).toBe(false);
   });
 
   it("Does not emit 'add-task' event when form is submitted with invalid data", async () => {
@@ -91,5 +92,23 @@ describe("AddTaskModal.vue", () => {
     expect(wrapper.vm.editedTask.title).toBe("");
     expect(wrapper.vm.editedTask.description).toBe("");
     expect(wrapper.vm.editedTask.status).toBe("open");
+    expect(wrapper.vm.formSubmitted).toBe(false);
+  });
+
+  it("Applies red borders when form is submitted with invalid data", async () => {
+    expect(wrapper.find("#task-title").classes("is-invalid")).toBe(false);
+    expect(wrapper.find("#task-description").classes("is-invalid")).toBe(false);
+
+    wrapper.setData({
+      editedTask: {
+        title: "", // Invalid title
+        description: "", // Invalid description
+      },
+    });
+    await wrapper.find("form").trigger("submit.prevent");
+    await wrapper.vm.$nextTick();
+
+    expect(wrapper.find("#task-title").classes("is-invalid")).toBe(true);
+    expect(wrapper.find("#task-description").classes("is-invalid")).toBe(true);
   });
 });
