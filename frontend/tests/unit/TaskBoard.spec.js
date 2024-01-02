@@ -1,12 +1,16 @@
-import axios from "axios";
-import MockAdapter from "axios-mock-adapter";
-import { flushPromises, mount, shallowMount } from "@vue/test-utils";
+import { mount } from "@vue/test-utils";
 import TaskBoard from "@/components/TaskBoard.vue";
 import TaskGroup from "@/components/TaskGroup.vue";
 import AddTaskModal from "@/components/AddTaskModal.vue";
+import {
+  fetchTasks,
+  addTask,
+  moveToNextStatus,
+  deleteTask,
+} from "@/services/taskService";
 
-describe("TaskBoard.vue", () => {
-  const mockedTasks = [
+jest.mock("@/services/taskService", () => ({
+  fetchTasks: jest.fn().mockResolvedValue([
     {
       id: 1,
       title: "Mocked Task 1",
@@ -31,161 +35,94 @@ describe("TaskBoard.vue", () => {
       description: "Description for Mocked Task 4",
       status: "unknown",
     },
-  ];
+  ]),
+  addTask: jest.fn().mockResolvedValue({
+    id: 5,
+    title: "New Task",
+    description: "Description for New Task",
+    status: "open",
+  }),
+  moveToNextStatus: jest.fn().mockResolvedValue({
+    id: 1,
+    title: "Mocked Task 1",
+    description: "Description for Mocked Task 1",
+    status: "testing",
+  }),
+  deleteTask: jest.fn().mockResolvedValue({
+    id: 1,
+    title: "Mocked Task 1",
+    description: "Description for Mocked Task 1",
+    status: "open",
+  }),
+}));
 
-  it("Renders task board with correct structure", () => {
-    const wrapper = shallowMount(TaskBoard);
+describe("TaskBoard.vue", () => {
+  let wrapper;
 
-    const taskGroupComponents = wrapper.findAllComponents(TaskGroup);
-    expect(taskGroupComponents).toHaveLength(3);
+  beforeEach(async () => {
+    wrapper = mount(TaskBoard);
+    await wrapper.vm.$nextTick();
   });
 
-  it("Fetches tasks from the backend correctly", async () => {
-    const mockedAxios = new MockAdapter(axios);
-
-    mockedAxios
-      .onGet("http://localhost:5000/tasks")
-      .reply(200, { tasks: mockedTasks });
-
-    const wrapper = mount(TaskBoard);
-    await flushPromises();
-
-    expect(wrapper.text()).toContain("Mocked Task 1");
-    expect(wrapper.text()).toContain("Mocked Task 2");
-    expect(wrapper.text()).toContain("Mocked Task 3");
-
-    mockedAxios.restore();
+  it("should render the TaskBoard component", () => {
+    expect(wrapper.exists()).toBeTruthy();
   });
 
-  it("Adds a task when add-task event is emitted", async () => {
-    const mockedAxios = new MockAdapter(axios);
+  it("should fetch tasks on mounted", () => {
+    expect(fetchTasks).toHaveBeenCalled();
+  });
 
-    mockedAxios
-      .onGet("http://localhost:5000/tasks")
-      .reply(200, { tasks: mockedTasks });
+  it("should render TaskGroup components for each task status", () => {
+    const taskGroups = wrapper.findAllComponents(TaskGroup);
+    expect(taskGroups.length).toBe(3);
+    expect(taskGroups[0].props("status")).toBe("open");
+    expect(taskGroups[1].props("status")).toBe("testing");
+    expect(taskGroups[2].props("status")).toBe("done");
+  });
 
-    mockedAxios.onPost("http://localhost:5000/tasks").reply(200, {
-      id: 5,
-      title: "New Task",
-      description: "New Task Description",
-      status: "open",
-    });
-
-    mockedAxios.onGet("http://localhost:5000/tasks").reply(200, {
-      tasks: [
-        ...mockedTasks,
-        {
-          id: 5,
-          title: "New Task",
-          description: "New Task Description",
-          status: "open",
-        },
-      ],
-    });
-
-    const wrapper = mount(TaskBoard);
-    await flushPromises();
-
+  it("should render the AddTaskModal component", () => {
     const addTaskModal = wrapper.findComponent(AddTaskModal);
-
-    await addTaskModal.vm.$emit("add-task", {
-      title: "New Task",
-      description: "New Task Description",
-      status: "open",
-    });
-    await wrapper.vm.$nextTick();
-
-    expect(mockedAxios.history.post.length).toBe(1);
-    expect(mockedAxios.history.post[0].url).toBe("http://localhost:5000/tasks");
-    expect(JSON.parse(mockedAxios.history.post[0].data)).toMatchObject({
-      title: "New Task",
-      description: "New Task Description",
-      status: "open",
-    });
-
-    expect(mockedAxios.history.get.length).toBe(2);
-
-    expect(wrapper.vm.tasks).toContainEqual({
-      id: 5,
-      title: "New Task",
-      description: "New Task Description",
-      status: "open",
-    });
-
-    mockedAxios.restore();
+    expect(addTaskModal.exists()).toBeTruthy();
   });
 
-  it("Moves a task to the next status when move-to-next-status event is emitted", async () => {
-    const mockedAxios = new MockAdapter(axios);
-
-    mockedAxios
-      .onGet("http://localhost:5000/tasks")
-      .reply(200, { tasks: mockedTasks });
-
-    mockedAxios.onPut("http://localhost:5000/tasks/1").reply(200, {
-      id: 1,
-      title: "Mocked Task 1",
-      description: "Description for Mocked Task 1",
-      status: "testing",
-    });
-
-    mockedAxios.onGet("http://localhost:5000/tasks").reply(200, {
-      tasks: [
-        ...mockedTasks,
-        {
-          id: 1,
-          title: "Mocked Task 1",
-          description: "Description for Mocked Task 1",
-          status: "testing",
-        },
-      ],
-    });
-
-    const wrapper = mount(TaskBoard);
-    await flushPromises();
-
-    const taskCard = wrapper.findComponent({ name: "TaskCard" });
-    await taskCard.vm.$emit("move-to-next-status", mockedTasks[0]);
+  it('should call addTask() when the AddTaskModal emits the "add-task" event', async () => {
+    const newTask = {
+      title: "New Task",
+      description: "This is a new task",
+      status: "open",
+    };
+    const addTaskModal = wrapper.findComponent(AddTaskModal);
+    addTaskModal.vm.$emit("add-task", newTask);
     await wrapper.vm.$nextTick();
-
-    expect(mockedAxios.history.put.length).toBe(1);
-    expect(mockedAxios.history.put[0].url).toBe(
-      "http://localhost:5000/tasks/1"
-    );
-    expect(JSON.parse(mockedAxios.history.put[0].data)).toMatchObject({
-      status: "testing",
-    });
-
-    expect(mockedAxios.history.get.length).toBe(2);
-
-    expect(wrapper.vm.tasks).toContainEqual({
-      id: 1,
-      title: "Mocked Task 1",
-      description: "Description for Mocked Task 1",
-      status: "testing",
-    });
-
-    mockedAxios.restore();
+    expect(addTask).toHaveBeenCalledTimes(1);
+    expect(addTask).toHaveBeenCalledWith(newTask);
   });
 
-  it("Deletes a task when delete request is sent to backend", async () => {
-    const mockedAxios = new MockAdapter(axios);
-
-    mockedAxios
-      .onGet("http://localhost:5000/tasks")
-      .reply(200, { tasks: mockedTasks });
-
-    mockedAxios.onDelete("http://localhost:5000/tasks/1").reply(200);
-
-    const wrapper = mount(TaskBoard);
-    await flushPromises();
-
-    const taskCard = wrapper.findComponent({ name: "TaskCard" });
-    await taskCard.vm.$emit("delete-task", mockedTasks[0]);
+  it('should call moveToNextStatus() when the TaskGroup emits the "move-to-next-status" event', async () => {
+    const task = {
+      id: 1,
+      title: "Task 1",
+      description: "Description for Task 1",
+      status: "open",
+    };
+    const taskGroup = wrapper.findComponent(TaskGroup);
+    taskGroup.vm.$emit("move-to-next-status", task);
     await wrapper.vm.$nextTick();
+    expect(moveToNextStatus).toHaveBeenCalledTimes(1);
+    expect(moveToNextStatus).toHaveBeenCalledWith(task, "testing");
+  });
 
-    expect(wrapper.vm.tasks).not.toContain("Mocked Task 1");
-
-    mockedAxios.restore();
+  it('should call deleteTask() when the TaskGroup emits the "delete-task" event', async () => {
+    const task = {
+      id: 1,
+      title: "Task 1",
+      description: "Description for Task 1",
+      status: "open",
+    };
+    const taskGroup = wrapper.findComponent(TaskGroup);
+    taskGroup.vm.$emit("delete-task", task);
+    await wrapper.vm.$nextTick();
+    expect(deleteTask).toHaveBeenCalledTimes(1);
+    expect(deleteTask).toHaveBeenCalledWith(task.id);
   });
 });

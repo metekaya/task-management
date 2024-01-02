@@ -19,7 +19,7 @@
 <script>
 import TaskGroup from '@/components/TaskGroup.vue';
 import AddTaskModal from '@/components/AddTaskModal.vue';
-import axios from 'axios';
+import { fetchTasks, addTask, moveToNextStatus, deleteTask } from '@/services/taskService';
 
 export default {
   components: {
@@ -41,29 +41,20 @@ export default {
   },
   methods: {
     async fetchTasks() {
-      try {
-        const response = await axios.get('http://localhost:5000/tasks');
-        this.tasks = response.data.tasks;
-      } catch (error) {
-        console.error('Error fetching tasks:', error);
-      }
+      this.tasks = await fetchTasks();
     },
     async addTask(newTask) {
-      try {
-        await axios.post('http://localhost:5000/tasks', newTask);
-        this.fetchTasks(); 
-      } catch (error) {
-        console.error('Error adding task:', error);
-      }
+      await addTask(newTask);
+      this.fetchTasks();
     },
     async moveToNextStatus(task) {
-      try {
-        const nextStatus = this.getNextStatus(task.status);
-        await axios.put(`http://localhost:5000/tasks/${task.id}`, { status: nextStatus});
-        this.fetchTasks();
-      } catch (error) {
-        console.error('Error moving task to the next status', error);
-      }
+      const nextStatus = this.getNextStatus(task.status);
+      await moveToNextStatus(task, nextStatus);
+      this.fetchTasks();
+    },
+    async deleteTask(task) {
+      await deleteTask(task.id);
+      this.fetchTasks();
     },
     getNextStatus(currentStatus) {
       const statusMap = {
@@ -72,17 +63,9 @@ export default {
       };
       return statusMap[currentStatus] || currentStatus; 
     },
-    async deleteTask(task) {
-      try {
-        await axios.delete(`http://localhost:5000/tasks/${task.id}`);
-        this.fetchTasks();
-      } catch (error) {
-        console.error('Error deleting task:', error);
-      }
-    },
     filteredTasks(status) {
-      return this.tasks.filter((task) => task.status === status);
-    },
+      return this.tasks ? this.tasks.filter((task) => task.status === status) : [];
+    }
   },
 };
 </script>
