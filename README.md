@@ -27,8 +27,10 @@ git clone https://github.com/metekaya/task-management.git
 cd task-management
 docker-compose up --build
 ```
+> [!CAUTION]
+> On some MacOS users, the port `5000` is in use by **Airplay Receiver**. Make sure that your ports `8080` and `5000` are free to use.
 
-4. The application should now be accessible. Open your browser and go to:
+3. The application should now be accessible. Open your browser and go to:
 
 - Frontend: [http://localhost:8080/](http://localhost:8080/)
 - Backend: [http://localhost:5000/](http://localhost:5000/)
