@@ -11,7 +11,7 @@ Before you begin, ensure you have met the following requirements:
 - **Python:** For the backend, you'll need Python installed. You can download it from [here](https://www.python.org/).
 - Ensure `pip`, the Python package installer, is installed. This usually comes with Python, but you may need to check during the Python installation process.
 
-- **Docker:** If you plan to run the project using Docker, ensure Docker is installed. You can download it from [docker.com](https://www.docker.com/).
+- **Docker:** If you plan to run the project using Docker, ensure Docker is installed. You can download it from [here](https://www.docker.com/products/docker-desktop/).
 
 ## Docker Installation
 
