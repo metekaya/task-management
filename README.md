@@ -11,7 +11,7 @@ Before you begin, ensure you have met the following requirements:
 - **Python:** For the backend, you'll need Python installed. You can download it from [here](https://www.python.org/).
 - Ensure `pip`, the Python package installer, is installed. This usually comes with Python, but you may need to check during the Python installation process.
 
-- **Docker:** If you plan to run the project using Docker, ensure Docker is installed. You can download it from [docker.com](https://www.docker.com/).
+- **Docker:** If you plan to run the project using Docker, ensure Docker is installed. You can download it from [here](https://www.docker.com/products/docker-desktop/).
 
 ## Docker Installation
 
@@ -27,8 +27,10 @@ git clone https://github.com/metekaya/task-management.git
 cd task-management
 docker-compose up --build
 ```
+> [!CAUTION]
+> On some MacOS users, the port `5000` is in use by **Airplay Receiver**. Make sure that your ports `8080` and `5000` are free to use.
 
-4. The application should now be accessible. Open your browser and go to:
+3. The application should now be accessible. Open your browser and go to:
 
 - Frontend: [http://localhost:8080/](http://localhost:8080/)
 - Backend: [http://localhost:5000/](http://localhost:5000/)
