@@ -2,7 +2,7 @@
   <div class="d-flex align-items-center justify-content-center flex-column gap-5 mt-5">
     <div class="d-flex flex-column flex-lg-row justify-content-between w-100">
       <h1>Task Management App</h1>
-      <div class="d-flex mt-3 mt-sm-0">
+      <div class="d-flex mt-3">
         <AddTaskModal :task="newTask" @add-task="addTask" />
       </div>
     </div>

@@ -1,5 +1,5 @@
 <template>
-  <div class="card border-1 rounded shadow" style="width: 22rem; height: 1000px; overflow-y: auto;">
+  <div class="card border-1 rounded shadow mb-5" style="width: 22rem; max-height: 800px; overflow-y: auto;">
     <div class="card-header sticky-top bg-white h3">
       {{ status.charAt(0).toUpperCase() + status.slice(1) }} Tasks
     </div>
